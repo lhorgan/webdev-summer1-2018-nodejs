@@ -5,6 +5,7 @@ var userSchema = mongoose.Schema({
   password: String,
   firstName: String,
   lastName: String,
+  isAdmin: Boolean,
   email: String,
   sections: [String]
 }, {collection: 'user'});

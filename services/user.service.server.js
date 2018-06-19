@@ -1,3 +1,7 @@
+const fetch = require('node-fetch');
+
+const JAVA_URI = "http://localhost:8080";
+
 module.exports = function (app) {
   app.get('/api/user', findAllUsers);
   app.get('/api/user/:userId', findUserById);
@@ -13,9 +17,39 @@ module.exports = function (app) {
     userModel
       .findUserByCredentials(credentials)
       .then(function(user) {
-        req.session['currentUser'] = user;
-        res.json(user);
-      })
+        if(user) {
+          req.session['currentUser'] = user;
+          res.json(user);
+        }
+        else {
+          loginAdmin(credentials);
+        }
+      });
+  }
+
+  function loginAdmin(credentials) {
+    console.log("attemping to log in as admin...");
+    console.log(credentials);
+    return fetch(JAVA_URI + "/api/login", {
+      method: 'post',
+      body: JSON.stringify(credentials),
+      headers: {
+        'content-type': 'application/json'
+      },
+      credentials: "same-origin"
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((user) => {
+      console.log("admin user found!");
+      user.isAdmin = true;
+      userModel.createUser(user)
+        .then(function (user) {
+          req.session['currentUser'] = user;
+          res.send(user);
+        });
+    });
   }
 
   function logout(req, res) {
@@ -36,6 +70,7 @@ module.exports = function (app) {
   }
 
   function createUser(req, res) {
+    console.log("creating user");
     var user = req.body;
     userModel.createUser(user)
       .then(function (user) {
