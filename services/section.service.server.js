@@ -4,6 +4,7 @@ module.exports = function (app) {
   app.get('/api/course/:courseId/section', findSectionsForCourse);
   app.post('/api/section/:sectionId/enrollment', enrollStudentInSection);
   app.get('/api/student/section', findSectionsForStudent);
+  app.put('/api/section/:sectionId', updateSection);
 
   var sectionModel = require('../models/section/section.model.server');
   var enrollmentModel = require('../models/enrollment/enrollment.model.server');
@@ -54,5 +55,18 @@ module.exports = function (app) {
       .then(function (section) {
         res.json(section);
       })
+  }
+
+  function updateSection(req, res) {
+    var id = req.params['sectionId'];
+    console.log(id);
+    var updatedSection = req.body;
+    console.log(JSON.stringify(updatedSection));
+    sectionModel.updateSection(id, updatedSection)
+             .then(updatedSectionInDB => {
+               console.log("here's the updated user in the database");
+               console.log(updatedSectionInDB);
+               res.send(updatedSectionInDB);
+             });
   }
 };
