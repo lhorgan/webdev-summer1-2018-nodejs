@@ -9,6 +9,7 @@ module.exports = function (app) {
   app.get('/api/profile', profile);
   app.post('/api/logout', logout);
   app.post('/api/login', login);
+  app.post('/api/user/update/:userId', updateUser);
 
   var userModel = require('../models/user/user.model.server');
 
@@ -18,6 +19,8 @@ module.exports = function (app) {
       .findUserByCredentials(credentials)
       .then(function(user) {
         if(user) {
+          console.log("user found");
+          console.log(user);
           req.session['currentUser'] = user;
           res.json(user);
         }
@@ -77,6 +80,19 @@ module.exports = function (app) {
         req.session['currentUser'] = user;
         res.send(user);
       })
+  }
+
+  function updateUser(req, res) {
+    var id = req.params['userId'];
+    console.log(id);
+    var updatedUser = req.body;
+    console.log(JSON.stringify(updatedUser));
+    userModel.updateUser(id, updatedUser)
+             .then(updatedUserInDB => {
+               console.log("here's the updated user in the database");
+               console.log(updatedUserInDB);
+               res.send(updatedUserInDB);
+             });
   }
 
   function findAllUsers(req, res) {
