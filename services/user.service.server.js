@@ -22,7 +22,11 @@ module.exports = function (app) {
           res.json(user);
         }
         else {
-          loginAdmin(credentials);
+          loginAdmin(credentials)
+          .then(function (user) {
+            req.session['currentUser'] = user;
+            res.send(user);
+          });
         }
       });
   }
@@ -44,11 +48,7 @@ module.exports = function (app) {
     .then((user) => {
       console.log("admin user found!");
       user.isAdmin = true;
-      userModel.createUser(user)
-        .then(function (user) {
-          req.session['currentUser'] = user;
-          res.send(user);
-        });
+      return userModel.createUser(user);
     });
   }
 
