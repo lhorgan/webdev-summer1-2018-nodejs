@@ -12,7 +12,12 @@ module.exports = function (app) {
 
   function findSectionsForStudent(req, res) {
     var currentUser = req.session.currentUser;
-    var studentId = currentUser._id;
+    try {
+      var studentId = currentUser._id;
+    }
+    catch(err0) {
+      var studentId = null;
+    }
     enrollmentModel
       .findSectionsForStudent(studentId)
       .then(function(enrollments) {
@@ -60,7 +65,7 @@ module.exports = function (app) {
   function findSectionsForCourse(req, res) {
     var courseId = req.params['courseId'];
     var currentUser = req.session.currentUser;
-    console.log("THE CURRENT USER");
+    console.log("THE CURRENT USER IS");
     console.log(currentUser);
     sectionModel
       .findSectionsForCourse(courseId)
@@ -68,7 +73,12 @@ module.exports = function (app) {
         let promises = [];
         for(let i = 0; i < sections.length; i++) {
           promises.push(enrollmentModel.countEnrollmentsForSection(sections[i]._id));
-          promises.push(enrollmentModel.studentInSection(sections[i]._id, currentUser._id));
+          if(currentUser) {
+            promises.push(enrollmentModel.studentInSection(sections[i]._id, currentUser._id));
+          }
+          else {
+            promises.push(false);
+          }
         }
         Promise.all(promises).then((values) => {
           console.log(values);
