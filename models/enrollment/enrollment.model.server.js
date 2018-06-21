@@ -6,7 +6,16 @@ var enrollmentModel = mongoose.model(
 );
 
 function enrollStudentInSection(enrollment) {
-  return enrollmentModel.create(enrollment);
+  return enrollmentModel.find(enrollment)
+                 .then((res) => {
+                   console.log("here's what we got... (" + res.length + ")");
+                   console.log(res);
+                   if(res.length === 0) {
+                     return enrollmentModel.create(enrollment);
+                   }
+                   return res;
+                 })
+  //return enrollmentModel.create(enrollment);
 }
 
 function findSectionsForStudent(studentId) {

@@ -47,7 +47,7 @@ module.exports = function (app) {
       section: sectionId
     };
 
-    sectionModel
+    /*sectionModel
       .decrementSectionSeats(sectionId)
       .then(function () {
         return enrollmentModel
@@ -55,7 +55,12 @@ module.exports = function (app) {
       })
       .then(function (enrollment) {
         res.json(enrollment);
-      })
+      })*/
+    enrollmentModel
+      .enrollStudentInSection(enrollment)
+      .then((enrollment) => {
+        res.json(enrollment);
+      });
   }
 
   function findSectionsForCourse(req, res) {
