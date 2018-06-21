@@ -11,7 +11,12 @@ function findUserById(userId) {
 }
 
 function createUser(user) {
-  return userModel.create(user);
+  return userModel.findOne({username: user.username})
+                  .then(res => {
+                    if(!res)
+                      return userModel.create(user)
+                    return null;
+                  });
 }
 
 function findAllUsers() {
