@@ -26,6 +26,10 @@ function incrementSectionSeats(sectionId) {
   });
 }
 
+function getSection(sectionId) {
+  return sectionModel.findById(sectionId);
+}
+
 function updateSection(sectionId, updatedSection) {
   console.log("THE UPDATED SECTION IS ");
   console.log(updatedSection);
@@ -37,5 +41,6 @@ module.exports = {
   findSectionsForCourse: findSectionsForCourse,
   decrementSectionSeats: decrementSectionSeats,
   incrementSectionSeats: incrementSectionSeats,
-  updateSection: updateSection
+  updateSection: updateSection,
+  getSection: getSection
 };
