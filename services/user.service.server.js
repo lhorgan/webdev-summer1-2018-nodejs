@@ -96,8 +96,11 @@ module.exports = function (app) {
     userModel.updateUser(id, updatedUser)
              .then(updatedUserInDB => {
                console.log("here's the updated user in the database");
-               console.log(updatedUserInDB);
-               res.send(updatedUserInDB);
+               //console.log(updatedUserInDB);
+               userModel.findUserById(id).then((user) => {
+                 req.session['currentUser'] = user;
+                 res.send(user);
+               });
              });
   }
 

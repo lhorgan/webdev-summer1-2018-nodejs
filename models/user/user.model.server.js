@@ -24,14 +24,16 @@ function findAllUsers() {
 }
 
 function updateUser(userId, updatedUser) {
-  console.log("here's the updated user.....");
+  /*console.log("here's the updated user.....");
   console.log(updatedUser);
   console.log("btw, the id we're updating is " + userId);
   //return userModel.update({_id: userId}, {$set: updatedUser});
   return userModel.findById(userId)
                   .then(user => {
                     return user.save(updatedUser);
-                  });
+                  });*/
+  console.log(userId);
+  return userModel.update({_id: userId}, {$set: updatedUser}).exec();
 }
 
 var api = {
