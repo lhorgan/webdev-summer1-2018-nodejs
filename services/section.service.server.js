@@ -50,8 +50,16 @@ module.exports = function (app) {
     var courseId = req.params['courseId'];
     sectionModel
       .findSectionsForCourse(courseId)
-      .then(function (sections) {
-        res.json(sections);
+      .then((sections) => {
+        let promises = [];
+        for(let i = 0; i < sections.length; i++) {
+          promises.push(enrollmentModel.countEnrollmentsForSection(sections[i]._id));
+        }
+        Promise.all(promises).then((values) => {
+          res.json(sections.map((section, index) => {
+            return {section: section, seatsLeft: section.seats - values[index]};
+          }));
+        });
       })
   }
 
