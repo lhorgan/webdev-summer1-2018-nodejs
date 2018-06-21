@@ -7,11 +7,16 @@ module.exports = function (app) {
   app.get('/api/user/:userId', findUserById);
   app.post('/api/user', createUser);
   app.get('/api/profile', profile);
-  app.post('/api/logout', logout);
+  app.get('/api/logout', logout);
   app.post('/api/login', login);
   app.post('/api/user/update/:userId', updateUser);
+  app.get('/api/current/', getLoggedInUser);
 
   var userModel = require('../models/user/user.model.server');
+
+  function getLoggedInUser(req, res) {
+    res.send(req.session.currentUser);
+  }
 
   function login(req, res) {
     var credentials = req.body;
@@ -57,7 +62,8 @@ module.exports = function (app) {
 
   function logout(req, res) {
     req.session.destroy();
-    res.send(200);
+    //res.send(200);
+    res.redirect("http://localhost:4200/");
   }
 
   function findUserById(req, res) {
