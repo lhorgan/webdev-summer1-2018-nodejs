@@ -6,8 +6,8 @@ var userSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
   isAdmin: Boolean,
-  email: String,
-  sections: [String]
+  email: String
+  //sections: [String]
 }, {collection: 'user'});
 
 module.exports = userSchema;

@@ -15,7 +15,26 @@ module.exports = function (app) {
     enrollmentModel
       .findSectionsForStudent(studentId)
       .then(function(enrollments) {
-        res.json(enrollments);
+        let promises = [];
+        for(let i = 0; i < enrollments.length; i++) {
+          console.log(enrollments[i].section._id);
+          promises.push(enrollmentModel.countEnrollmentsForSection(enrollments[i].section._id)
+                                       .then((count) => {enrollments[i].seatsLeft = count; return count;}));
+        }
+        Promise.all(promises).then(values => {
+          //console.log(values);
+          //console.log(enrollments);
+          /*for(var i = 0; i < enrollments.length; i++) {
+            console.log("adding " + values[i] + "seats");
+            enrollments[i].seatsLeft = values[i];
+            console.log(enrollments[i].seatsLeft);
+          }
+          console.log(enrollments);*/
+          var enrollmentsAnnotated = enrollments.map((enrollment, index) => {
+            return {"enrollment": enrollment, "seatsLeft": enrollment.section.seats - values[index]};
+          });
+          res.json(enrollmentsAnnotated);
+        });
       });
   }
 

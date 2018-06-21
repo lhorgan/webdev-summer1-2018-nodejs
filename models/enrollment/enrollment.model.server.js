@@ -16,7 +16,13 @@ function findSectionsForStudent(studentId) {
     .exec();
 }
 
+function countEnrollmentsForSection(sectionId) {
+  return enrollmentModel
+      .count({section: sectionId});
+}
+
 module.exports = {
   enrollStudentInSection: enrollStudentInSection,
-  findSectionsForStudent: findSectionsForStudent
+  findSectionsForStudent: findSectionsForStudent,
+  countEnrollmentsForSection: countEnrollmentsForSection
 };
