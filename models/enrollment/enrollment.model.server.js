@@ -36,8 +36,17 @@ function countEnrollmentsForSection(sectionId) {
       .count({section: sectionId});
 }
 
+function studentInSection(sectionId, studentId) {
+  return enrollmentModel
+         .count({section: sectionId, student: studentId})
+         .then((count) => {
+           return count > 0;
+         });
+}
+
 module.exports = {
   enrollStudentInSection: enrollStudentInSection,
   findSectionsForStudent: findSectionsForStudent,
-  countEnrollmentsForSection: countEnrollmentsForSection
+  countEnrollmentsForSection: countEnrollmentsForSection,
+  studentInSection: studentInSection
 };

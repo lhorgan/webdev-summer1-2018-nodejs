@@ -48,16 +48,22 @@ module.exports = function (app) {
 
   function findSectionsForCourse(req, res) {
     var courseId = req.params['courseId'];
+    var currentUser = req.session.currentUser;
+    console.log("THE CURRENT USER");
+    console.log(currentUser);
     sectionModel
       .findSectionsForCourse(courseId)
       .then((sections) => {
         let promises = [];
         for(let i = 0; i < sections.length; i++) {
           promises.push(enrollmentModel.countEnrollmentsForSection(sections[i]._id));
+          promises.push(enrollmentModel.studentInSection(sections[i]._id, currentUser._id));
         }
         Promise.all(promises).then((values) => {
-          res.json(sections.map((section, index) => {
-            return {section: section, seatsLeft: section.seats - values[index]};
+          console.log(values);
+          let index = 0;
+          res.json(sections.map((section) => {
+            return {section: section, seatsLeft: section.seats - values[index++], enrolled: values[index++]};
           }));
         });
       })
