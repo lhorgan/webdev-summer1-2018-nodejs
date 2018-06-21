@@ -11,7 +11,13 @@ function enrollStudentInSection(enrollment) {
                    console.log("here's what we got... (" + res.length + ")");
                    console.log(res);
                    if(res.length === 0) {
-                     return enrollmentModel.create(enrollment);
+                     countEnrollmentsForSection(enrollment.section._id).then((count) => {
+                       if(enrollment.section.seats - count > 0) {
+                         return enrollmentModel.create(enrollment);
+                       }
+                       console.log("THE SECTION IS FULL!");
+                       return null;
+                     });
                    }
                    return res;
                  })

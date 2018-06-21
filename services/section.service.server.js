@@ -22,14 +22,6 @@ module.exports = function (app) {
                                        .then((count) => {enrollments[i].seatsLeft = count; return count;}));
         }
         Promise.all(promises).then(values => {
-          //console.log(values);
-          //console.log(enrollments);
-          /*for(var i = 0; i < enrollments.length; i++) {
-            console.log("adding " + values[i] + "seats");
-            enrollments[i].seatsLeft = values[i];
-            console.log(enrollments[i].seatsLeft);
-          }
-          console.log(enrollments);*/
           var enrollmentsAnnotated = enrollments.map((enrollment, index) => {
             return {"enrollment": enrollment, "seatsLeft": enrollment.section.seats - values[index]};
           });
@@ -47,15 +39,6 @@ module.exports = function (app) {
       section: sectionId
     };
 
-    /*sectionModel
-      .decrementSectionSeats(sectionId)
-      .then(function () {
-        return enrollmentModel
-          .enrollStudentInSection(enrollment)
-      })
-      .then(function (enrollment) {
-        res.json(enrollment);
-      })*/
     enrollmentModel
       .enrollStudentInSection(enrollment)
       .then((enrollment) => {
